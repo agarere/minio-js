@@ -4,10 +4,10 @@ import MinioClient from './lib/minio/MinioClient.js'
 
 const minioClient = new MinioClient({
   endPoint: process.env.ENDPOINT,
-  port: 9000,
+  port: Number(process.env.PORT),
   useSSL: false,
-  accessKey: 'E3MZdxTMz4gjVgzJPv0Y',
-  secretKey: 'gO7tZj5fNESZrvSSYdZQAs5sLU6ZXCOXT70hdugW'
+  accessKey: process.env.ACCESS_KEY,
+  secretKey: process.env.SECRET_KEY
 })
 
 /** 
