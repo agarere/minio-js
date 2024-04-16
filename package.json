@@ -1,0 +1,15 @@
+{
+  "name": "minio-js",
+  "version": "1.0.0",
+  "description": "minio nodejs samples",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "agarere",
+  "license": "ISC",
+  "dependencies": {
+    "minio": "^7.1.3"
+  }
+}
