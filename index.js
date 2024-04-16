@@ -1,32 +1,18 @@
-
-
-// const uploadFile = () => {
-//   minioClient.fPutObject('mybucket',
-//     'testfile.txt',
-//     './testfile.txt',
-//     {'Content-Type': 'application/text'},
-//     function (error, objInfo) {
-//       if (error) return console.log('Error: ', error)
-
-//       console.log("Object: ", objInfo)
-//     }
-//   )
-// }
-
-// // makeBucket()
-
-// uploadFile()
-
+import 'dotenv/config'
+import * as fs from 'fs'
 import MinioClient from './lib/minio/MinioClient.js'
 
 const minioClient = new MinioClient({
-  endPoint: 'localhost',
+  endPoint: process.env.ENDPOINT,
   port: 9000,
   useSSL: false,
   accessKey: 'E3MZdxTMz4gjVgzJPv0Y',
   secretKey: 'gO7tZj5fNESZrvSSYdZQAs5sLU6ZXCOXT70hdugW'
 })
 
+/** 
+ * MAKE BUCKET
+ */
 // minioClient.makeBucket('mysecondbucket')
 //   .then(bucket => {
 //     console.log('Created bucket is ' + bucket)
@@ -35,6 +21,9 @@ const minioClient = new MinioClient({
 //     console.log("There is something wrong, Error: ", error)
 //   })
 
+/**
+ * LIST ALL BUCKETS
+ */
 // minioClient.listBuckets()
 //   .then(buckets => {
 //     console.log("Your Buckets: ", buckets)
@@ -43,22 +32,44 @@ const minioClient = new MinioClient({
 //     console.log("There is something wrong, Error: ", error)
 //   })
 
+/**
+ * UPLOAD FILE
+ */
+// const file = './testfile.txt'
+// const fileStream = fs.createReadStream(file)
+// fs.stat(file, function (err, stats) {
+//   if (err) {
+//     return console.log(err)
+//   }
 
-import * as fs from 'fs'
-const file = './testfile.txt'
-const fileStream = fs.createReadStream(file)
-fs.stat(file, function (err, stats) {
-  if (err) {
-    return console.log(err)
-  }
+//   minioClient.uploadFileStream('mybucket', 'stream-file-test.txt', fileStream, stats.size)
+//     .then(objInfo => {
+//       console.log("Uploaded File objInfo: ", objInfo)
+//     })
+//     .catch(error => {
+//       console.log("There is something wrong, Error: ", error)
+//     })
+// })
 
-  minioClient.uploadFileStream('mybucket', 'stream-file-test.txt', fileStream, stats.size)
-    .then(objInfo => {
-      console.log("Uploaded File objInfo: ", objInfo)
+/**
+ * DOWNLOAD FILE
+ */
+var size = 0
+minioClient.downloadFileStream('mybucket', 'testfile.txt')
+  .then(dataStream => {
+    dataStream.on('data', function (chunk) {
+      size += chunk.length
+      console.log('chunk: ', chunk)
     })
-    .catch(error => {
-      console.log("There is something wrong, Error: ", error)
+    dataStream.on('end', function () {
+      console.log('End. Total size = ' + size + ' Byte')
     })
-})
+    dataStream.on('error', function (err) {
+      console.log(err)
+    })
+  })
+  .catch(error => {
+    console.log("There is something wrong, Error: ", error)
+  })
 
 
